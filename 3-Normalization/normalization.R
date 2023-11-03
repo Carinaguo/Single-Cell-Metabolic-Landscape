@@ -7,6 +7,7 @@ library(viridis)
 library(edgeR)
 library(scran)
 options(stringsAsFactors=FALSE)
+library(scuttle)
 
 args <- commandArgs()
 tumor <- args[6]
@@ -77,7 +78,19 @@ saveRDS(selected_impute_tpm_norm,file.path(outDir,"TMM_tpm.rds"))
 
 
 #4. scran, deconvolution
-scran.sf <- scran::computeSumFactors(selected_impute_counts[low_dropout_genes,],clusters=selected_impute_sce$cellType)
+#scran.sf <- scran::computeSumFactors(selected_impute_counts[low_dropout_genes,],clusters=selected_impute_sce$cellType)
+
+# -------newly added!--------
+scran.sf <- scuttle::pooledSizeFactors(selected_impute_counts[low_dropout_genes,],clusters=selected_impute_sce$cellType)
+## when using HNSCC dataset:
+## filter out cells with "Unknow" cell type to avoid "zero cells in one of the clusters" error
+# filtered_cell_types <- selected_impute_sce$cellType
+# filtered_cell_types <- filtered_cell_types[filtered_cell_types != "Unknow"]
+# filtered_cell_types <- droplevels(filtered_cell_types)
+
+# scran.sf <- scuttle::pooledSizeFactors(selected_impute_counts[low_dropout_genes,], clusters = filtered_cell_types)
+#----------------------------
+
 summary(scran.sf)
 selected_impute_tpm_norm <- t(t(selected_impute_tpm) / scran.sf)
 selected_impute_exp_norm <- log2(selected_impute_tpm_norm+1)

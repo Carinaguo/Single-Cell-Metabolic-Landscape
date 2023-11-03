@@ -1,9 +1,9 @@
 #install scater,scran,Rstne
-source("https://bioconductor.org/biocLite.R")
-biocLite("scater")
-biocLite("scran")
-biocLite("Rtsne")
-biocLite("biomaRt")
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("scater")
+# biocLite("scran")
+# biocLite("Rtsne")
+# biocLite("biomaRt")
 
 #scimpute
 if(library(devtools,logical.return=T)){

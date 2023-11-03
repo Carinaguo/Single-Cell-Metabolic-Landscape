@@ -43,6 +43,11 @@ row_data[rownames(row_data)%in%metabolics,"metabolic"]=TRUE
 #3. build scater object
 all_data <- data.matrix(all_data)
 raw_tpm <- 2^ all_data - 1
+
+# Identify and cap the extreme gene expression values
+replacement_value <- (2^8) - 1
+raw_tpm[raw_tpm > replacement_value] <- replacement_value
+
 sce <- SingleCellExperiment(
   assays = list(tpm=raw_tpm, exprs=all_data),
   colData = col_data,
